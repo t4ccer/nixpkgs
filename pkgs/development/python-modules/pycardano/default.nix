@@ -12,12 +12,15 @@
   frozendict,
   frozenlist,
   mnemonic,
+  ogmios,
   poetry-core,
   pprintpp,
   pynacl,
+  requests,
   setuptools,
   typeguard,
   websocket-client,
+  websockets,
 }:
 
 let
@@ -34,7 +37,7 @@ let
 in
 buildPythonPackage rec {
   pname = "pycardano";
-  version = "0.11.1";
+  version = "0.12.0";
 
   format = "pyproject";
 
@@ -42,7 +45,7 @@ buildPythonPackage rec {
     owner = "Python-Cardano";
     repo = "pycardano";
     rev = "v${version}";
-    hash = "sha256-OWm6ztt3s3DUbxDZqpvwTO6XwdY/57AI6Bc6x6kxH7k=";
+    hash = "sha256-0r1UP0HE1mI1+Z0L0vd+eKC7ZPreZasuyv4FC9/pw0o=";
   };
 
   propagatedBuildInputs = [
@@ -55,15 +58,16 @@ buildPythonPackage rec {
     frozendict
     frozenlist
     mnemonic
+    ogmios
     poetry-core
     pprintpp
     pynacl
+    requests
     setuptools
     typeguard
     websocket-client
+    websockets
   ];
-
-  pythonRelaxDeps = [ "typeguard" ];
 
   pythonImportsCheck = [ "pycardano" ];
 
