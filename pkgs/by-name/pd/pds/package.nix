@@ -8,6 +8,7 @@
   bash,
   xxd,
   openssl,
+  nixosTests,
   lib,
 }:
 
@@ -79,6 +80,9 @@ buildNpmPackage rec {
 
   passthru = {
     inherit generateSecrets;
+    tests = {
+      inherit (nixosTests) pds;
+    };
   };
 
   meta = {
