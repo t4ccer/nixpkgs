@@ -27,15 +27,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     patchShebangs . pdsadmin
     substituteInPlace pdsadmin.sh \
       --replace-fail NIXPKGS_PDSADMIN_ROOT $out
-    chmod +x pdsadmin.sh
-    makeWrapper pdsadmin.sh "$out/bin/pdsadmin" \
-      --prefix PATH : "${
-        lib.makeBinPath [
-          jq
-          curl
-          openssl
-        ]
-      }"
 
     runHook postBuild
   '';
@@ -44,7 +35,16 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook preInstall
 
     mkdir -p $out/lib/pds
+    install -Dm755 pdsadmin.sh $out/lib/pds
     install -Dm755 pdsadmin/*.sh $out/lib/pds
+    makeWrapper "$out/lib/pds/pdsadmin.sh" "$out/bin/pdsadmin" \
+      --prefix PATH : "${
+        lib.makeBinPath [
+          jq
+          curl
+          openssl
+        ]
+      }"
 
     runHook postInstall
   '';
