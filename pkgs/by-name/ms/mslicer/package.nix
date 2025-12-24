@@ -7,6 +7,7 @@
   rustPlatform,
   vulkan-loader,
   wayland,
+  wrapWinitAppsHook,
 }:
 
 rustPlatform.buildRustPackage (finalAttrs: {
@@ -28,6 +29,8 @@ rustPlatform.buildRustPackage (finalAttrs: {
     vulkan-loader
     wayland
   ];
+
+  nativeBuildInputs = [ wrapWinitAppsHook ];
 
   # Force linking to libEGL, which is always dlopen()ed, and to
   # libwayland-client & libxkbcommon, which is dlopen()ed based on the
