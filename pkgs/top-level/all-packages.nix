@@ -14280,6 +14280,8 @@ with pkgs;
     }
   );
 
+  inherit (callPackage ../development/libraries/winit { }) wrapWinitAppsHook;
+
   inherit (callPackage ../servers/web-apps/wordpress { })
     wordpress
     wordpress_6_7
