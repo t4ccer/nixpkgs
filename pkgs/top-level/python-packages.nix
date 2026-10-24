@@ -12823,6 +12823,8 @@ self: super: with self; {
     openvino-tokenizers-native = pkgs.openvino-tokenizers;
   };
 
+  openviking-sdk = callPackage ../development/python-modules/openviking-sdk { };
+
   openwebifpy = callPackage ../development/python-modules/openwebifpy { };
 
   openwrt-luci-rpc = callPackage ../development/python-modules/openwrt-luci-rpc { };
