@@ -27,6 +27,7 @@ let
       "<imports = [ pkgs.git-pages.services.default ]>" = fakeSubmodule pkgs.git-pages.services.default;
       "<imports = [ pkgs.ktls-utils.services.default ]>" = fakeSubmodule pkgs.ktls-utils.services.default;
       "<imports = [ pkgs.php.services.default ]>" = fakeSubmodule pkgs.php.services.default;
+      "<imports = [ pkgs.openviking.services.default ]>" = fakeSubmodule pkgs.openviking.services.default;
       "<imports = [ pkgs.snid.services.default ]>" = fakeSubmodule pkgs.snid.services.default;
       "<imports = [ pkgs.trailbase.services.default ]>" = fakeSubmodule pkgs.trailbase.services.default;
     };

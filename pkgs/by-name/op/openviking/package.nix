@@ -1,6 +1,8 @@
 {
   lib,
   fetchFromGitHub,
+  formats,
+  nixosTests,
   buildNpmPackage,
   python3Packages,
   rustPlatform,
@@ -188,6 +190,14 @@ python3Packages.buildPythonApplication (finalAttrs: {
 
   nativeInstallCheckInputs = [ versionCheckHook ];
   versionCheckProgram = "${placeholder "out"}/bin/ov";
+
+  passthru = {
+    tests = { inherit (nixosTests) openviking-modular; };
+    services.default = {
+      imports = [ (lib.modules.importApply ./service.nix { inherit formats; }) ];
+      openviking.package = finalAttrs.finalPackage;
+    };
+  };
 
   meta = {
     description = "Context database for AI agents";

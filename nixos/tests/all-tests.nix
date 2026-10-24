@@ -1394,6 +1394,7 @@ in
   opentelemetry-collector-validate = pkgs.callPackage ./opentelemetry-collector-validate.nix {
     inherit evalSystem;
   };
+  openviking-modular = runTest ./openviking.nix;
   openvscode-server = runTest ./openvscode-server.nix;
   openvswitch = runTest ./openvswitch.nix;
   optee = runTestOn [ "aarch64-linux" ] ./optee.nix;
