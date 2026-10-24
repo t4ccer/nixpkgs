@@ -1,7 +1,10 @@
-{
+args@{
   lib,
   fetchFromGitHub,
+  formats,
+  nixosTests,
   buildNpmPackage,
+  callPackage,
   python3Packages,
   rustPlatform,
   cargo,
@@ -10,6 +13,7 @@
   maturin,
   perl,
   versionCheckHook,
+  withBot ? false,
 }:
 
 python3Packages.buildPythonApplication (finalAttrs: {
@@ -113,66 +117,83 @@ python3Packages.buildPythonApplication (finalAttrs: {
     "tree-sitter-lua"
   ];
 
-  dependencies = with python3Packages; [
-    aiohttp
-    apscheduler
-    argon2-cffi
-    async-timeout
-    cairosvg
-    charset-normalizer
-    cryptography
-    defusedxml
-    fastapi
-    feedparser
-    firecrawl-anydoc
-    grep-ast
-    httpx
-    jinja2
-    json-repair
-    lark-oapi
-    litellm
-    loguru
-    mcp
-    openai
-    openviking-sdk
-    opentelemetry-api
-    opentelemetry-exporter-otlp-proto-grpc
-    opentelemetry-exporter-otlp-proto-http
-    opentelemetry-instrumentation-asyncio
-    opentelemetry-sdk
-    orjson
-    packaging
-    pathspec
-    pdfminer-six
-    pdfplumber
-    prometheus-client
-    protobuf
-    pydantic
-    python-multipart
-    pyyaml
-    rapidfuzz
-    requests
-    scrapy
-    tabulate
-    trafilatura
-    tree-sitter
-    tree-sitter-c-sharp
-    tree-sitter-javascript
-    tree-sitter-language-pack
-    tree-sitter-python
-    tree-sitter-rust
-    tree-sitter-typescript
-    typer
-    typing-extensions
-    urllib3
-    uvicorn
-    volcengine
-    volcengine-ark-runtime
-    xxhash
-  ];
+  dependencies =
+    with python3Packages;
+    [
+      aiohttp
+      apscheduler
+      argon2-cffi
+      async-timeout
+      cairosvg
+      charset-normalizer
+      cryptography
+      defusedxml
+      fastapi
+      feedparser
+      firecrawl-anydoc
+      grep-ast
+      httpx
+      jinja2
+      json-repair
+      lark-oapi
+      litellm
+      loguru
+      mcp
+      openai
+      openviking-sdk
+      opentelemetry-api
+      opentelemetry-exporter-otlp-proto-grpc
+      opentelemetry-exporter-otlp-proto-http
+      opentelemetry-instrumentation-asyncio
+      opentelemetry-sdk
+      orjson
+      packaging
+      pathspec
+      pdfminer-six
+      pdfplumber
+      prometheus-client
+      protobuf
+      pydantic
+      python-multipart
+      pyyaml
+      rapidfuzz
+      requests
+      scrapy
+      tabulate
+      trafilatura
+      tree-sitter
+      tree-sitter-c-sharp
+      tree-sitter-javascript
+      tree-sitter-language-pack
+      tree-sitter-python
+      tree-sitter-rust
+      tree-sitter-typescript
+      typer
+      typing-extensions
+      urllib3
+      uvicorn
+      volcengine
+      volcengine-ark-runtime
+      xxhash
+    ]
+    ++ lib.optionals withBot (
+      with python3Packages;
+      [
+        # Core gateway, direct sandbox, web tools and scheduling. Other upstream
+        # bot extras (additional channels and sandbox backends) remain optional.
+        croniter
+        ddgs
+        html2text
+        prompt-toolkit
+        pydantic-settings
+        readability-lxml
+        rich
+        socksio
+        websockets
+      ]
+    );
 
-  postInstall = ''
-    # Requires the dependencies of the `bot` extra, many of which are not packaged
+  postInstall = lib.optionalString (!withBot) ''
     rm $out/bin/vikingbot
   '';
 
@@ -184,11 +205,21 @@ python3Packages.buildPythonApplication (finalAttrs: {
 
   postInstallCheck = ''
     $out/bin/openviking-server --help > /dev/null
+    ${lib.optionalString withBot "$out/bin/vikingbot --help > /dev/null"}
     PYTHONPATH=$out/${python3Packages.python.sitePackages}:$PYTHONPATH ${python3Packages.python.interpreter} -c 'from openviking.pyagfs import get_binding_client; get_binding_client()'
   '';
 
   nativeInstallCheckInputs = [ versionCheckHook ];
   versionCheckProgram = "${placeholder "out"}/bin/ov";
+
+  passthru = {
+    tests = { inherit (nixosTests) openviking-modular; };
+    services.default = {
+      imports = [ (lib.modules.importApply ./service.nix { inherit formats; }) ];
+      # finalAttrs.finalPackage lacks the callPackage-level override function.
+      openviking.package = lib.mkDefault (callPackage ./package.nix args);
+    };
+  };
 
   meta = {
     description = "Context database for AI agents";
