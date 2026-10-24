@@ -12686,6 +12686,10 @@ self: super: with self; {
     callPackage ../development/python-modules/opentelemetry-instrumentation-aiohttp-client
       { };
 
+  opentelemetry-instrumentation-asyncio =
+    callPackage ../development/python-modules/opentelemetry-instrumentation-asyncio
+      { };
+
   opentelemetry-instrumentation-asgi =
     callPackage ../development/python-modules/opentelemetry-instrumentation-asgi
       { };
