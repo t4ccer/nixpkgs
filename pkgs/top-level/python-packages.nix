@@ -22292,6 +22292,8 @@ self: super: with self; {
 
   volatile = callPackage ../development/python-modules/volatile { };
 
+  volcengine = callPackage ../development/python-modules/volcengine { };
+
   volkswagencarnet = callPackage ../development/python-modules/volkswagencarnet { };
 
   volkszaehler = callPackage ../development/python-modules/volkszaehler { };
