@@ -22294,6 +22294,8 @@ self: super: with self; {
 
   volcengine = callPackage ../development/python-modules/volcengine { };
 
+  volcenginesdk-ark = callPackage ../development/python-modules/volcenginesdk-ark { };
+
   volcenginesdk-core = callPackage ../development/python-modules/volcenginesdk-core { };
 
   volkswagencarnet = callPackage ../development/python-modules/volkswagencarnet { };
